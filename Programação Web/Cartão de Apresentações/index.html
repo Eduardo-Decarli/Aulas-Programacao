@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Meu Primeiro Site</title>            <!-- Define o Título do Site-->
+
+    <link rel="stylesheet" href="style.css">    <!-- Identifica o arquivo de estilização -->
+</head>
+<body>
+
+    <h1>Meu Cartão de Apresentação</h1>         <!-- Tag de Título Grande -->
+
+    <input type="text" id="nome" placeholder="Digite seu nome">         <!-- Tag de Input (Entrada) do tipo Texto-->
+
+    <input type="number" id="idade" placeholder="Digite sua idade">     <!-- Tag de Input (Entrada) do tipo número-->
+
+    <input type="text" id="cidade" placeholder="Digite sua cidade">
+
+    <button onclick="mostrarCartao()">          <!-- Função lógica de JavaScript atribuida ao evento do botão -->
+        Mostrar Cartão                          <!-- Texto do Botão -->
+    </button>                                   <!-- Tag de Botão Simples-->
+
+    <div id="cartao">                           <!-- Tag de divisória de layout -->
+
+        <h2 id="nomeCartao"></h2>               <!-- Tag de Título semi-grande com identificação -->
+        <p id="idadeCartao"></p>                <!-- Tag de parágrafo com identificação -->
+        <p id="cidadeCartao"></p>
+
+    </div>
+
+    <script src="script.js"></script>           <!-- Tag de arquivo de lógica JavaScript -->
+
+</body>
+</html>

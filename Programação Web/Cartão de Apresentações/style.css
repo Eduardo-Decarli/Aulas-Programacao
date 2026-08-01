@@ -1,0 +1,51 @@
+/* Estilos para o corpo da página */
+body{
+
+    font-family: Arial, Helvetica, sans-serif;      /* Tipografia padrão */
+
+    background-color: #f2f2f2;                    
+
+    text-align: center;
+
+    margin-top: 40px;
+
+}
+
+/* Estilos para os campos de entrada */
+input{
+
+    display: block;
+
+    margin: 10px auto;
+
+    padding: 10px;
+
+    width: 250px;
+
+}
+
+/* Estilos para o botão */
+button{
+
+    padding: 10px 20px;
+
+    cursor: pointer;
+
+}
+
+/* Estilos para o cartão de apresentação */
+#cartao{
+
+    margin: 30px auto;
+
+    width: 300px;
+
+    padding: 20px;
+
+    background: white;
+
+    border-radius: 10px;
+
+    box-shadow: 0 0 10px gray;
+
+}
