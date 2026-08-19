@@ -1,6 +1,8 @@
+package src;
+
 import java.util.Scanner;
 
-public class AnalisadorDePerfil {
+public class Main {
 
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
@@ -55,7 +57,7 @@ public class AnalisadorDePerfil {
         String nomeLimpo = nome.trim();
         int indiceEspaco = nomeLimpo.indexOf(" ");
         
-        if (indiceEspaco == -1) {
+        if (indiceEspaco == -1) {   // Se o indexOf não localiza o caracter, ele retorna -1
             return nomeLimpo; // Caso o usuário tenha digitado apenas um nome
         }
         return nomeLimpo.substring(0, indiceEspaco);
