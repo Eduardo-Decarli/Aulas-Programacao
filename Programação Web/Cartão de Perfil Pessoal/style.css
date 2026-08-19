@@ -1,0 +1,87 @@
+/* ==========================================================================
+   1. REGRA GERAL (RESET)
+   Remove margens padrão do navegador e ajusta o cálculo de tamanhos.
+   ========================================================================== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box; /* Garante que padding não aumente a largura total */
+    font-family: Arial, sans-serif;
+}
+
+/* ==========================================================================
+   2. ESTILIZAÇÃO DO CORPO (BACKGROUND E CENTRALIZAÇÃO)
+   ========================================================================== */
+body {
+    background-color: #f0f2f5; /* Cor de fundo da página */
+    display: flex;             /* Ativa o Flexbox para alinhar elementos */
+    justify-content: center;   /* Centraliza na horizontal */
+    align-items: center;       /* Centraliza na vertical */
+    min-height: 100vh;         /* Ocupa 100% da altura da tela */
+}
+
+/* ==========================================================================
+   3. O CARTÃO (BOX MODEL: Largura, Padding, Bordas e Sombras)
+   ========================================================================== */
+.card {
+    background-color: #ffffff;
+    width: 300px;              /* Largura fixa do cartão */
+    padding: 24px;             /* Espaço interno entre a borda e o texto */
+    border-radius: 16px;       /* Bordas arredondadas */
+    text-align: center;        /* Alinha todo o texto no centro */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* Sombra suave */
+}
+
+/* ==========================================================================
+   4. A IMAGEM
+   ========================================================================== */
+.avatar {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;        /* Deixa a imagem perfeitamente redonda */
+    margin-bottom: 16px;       /* Espaço externo abaixo da imagem */
+    border: 3px solid #4f46e5; /* Borda colorida ao redor da foto */
+}
+
+/* ==========================================================================
+   5. TIPOGRAFIA (FONTES E CORES)
+   ========================================================================== */
+.nome {
+    font-size: 1.5rem;         /* Tamanho da fonte */
+    color: #1f2937;            /* Cor do texto em tom escuro */
+    margin-bottom: 4px;
+}
+
+.cargo {
+    font-size: 0.9rem;
+    color: #4f46e5;            /* Cor roxa de destaque */
+    font-weight: bold;         /* Deixa o texto em negrito */
+    margin-bottom: 12px;
+}
+
+.bio {
+    font-size: 0.85rem;
+    color: #6b7280;            /* Cinza médio para textos secundários */
+    line-height: 1.4;          /* Espaçamento entre as linhas */
+    margin-bottom: 20px;
+}
+
+/* ==========================================================================
+   6. BOTÃO E ESTADOS INTERATIVOS (:hover)
+   ========================================================================== */
+.botao {
+    display: inline-block;     /* Permite aplicar padding e altura no link */
+    background-color: #4f46e5;
+    color: #ffffff;
+    text-decoration: none;     /* Remove o sublinhado padrão dos links */
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-weight: bold;
+    transition: background-color 0.3s ease; /* Transição suave na cor */
+}
+
+/* Efeito ao passar o mouse por cima do botão */
+.botao:hover {
+    background-color: #3730a3; /* Escurece a cor do botão */
+}

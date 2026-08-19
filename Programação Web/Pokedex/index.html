@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pokédex Web</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div class="pokedex-container">
+        <!-- Topo Estilo Pokédex -->
+        <header class="pokedex-header">
+            <div class="camera-lens"></div>
+            <div class="indicators">
+                <span class="dot red"></span>
+                <span class="dot yellow"></span>
+                <span class="dot green"></span>
+            </div>
+            <h1>Pokédex</h1>
+        </header>
+
+        <!-- Controles de Busca e Filtro -->
+        <section class="controls">
+            <input type="text" id="searchInput" placeholder="Buscar por nome ou ID...">
+            <select id="typeFilter">
+                <option value="all">Todos os Tipos</option>
+                <option value="fire">Fogo (Fire)</option>
+                <option value="water">Água (Water)</option>
+                <option value="grass">Planta (Grass)</option>
+                <option value="electric">Elétrico (Electric)</option>
+                <option value="psychic">Psíquico (Psychic)</option>
+                <option value="ice">Gelo (Ice)</option>
+                <option value="dragon">Dragão (Dragon)</option>
+                <option value="ghost">Fantasma (Ghost)</option>
+            </select>
+        </section>
+
+        <!-- Display do Carregamento -->
+        <div id="loader" class="loader hidden">Carregando Pokémon...</div>
+
+        <!-- Grade de Cards -->
+        <main class="pokemon-grid" id="pokemonGrid"></main>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
