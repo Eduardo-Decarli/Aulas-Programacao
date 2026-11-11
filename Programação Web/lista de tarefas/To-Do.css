@@ -1,0 +1,459 @@
+```html
+<!DOCTYPE html>
+<html lang="pt-BR" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Task Master Pro - Gerenciador de Tarefas</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        glass: {
+                            DEFAULT: 'rgba(255, 255, 255, 0.05)',
+                            border: 'rgba(255, 255, 255, 0.1)',
+                            card: 'rgba(30, 41, 59, 0.7)'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Animações e Estilos Customizados */
+        body {
+            background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #31104b 100%);
+            min-height: 100vh;
+        }
+
+        .glass-card {
+            background: rgba(15, 23, 42, 0.65);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .glass-input {
+            background: rgba(30, 41, 59, 0.5);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+        }
+
+        .task-item {
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .task-item:hover {
+            transform: translateY(-2px);
+            border-color: rgba(139, 92, 246, 0.4);
+            box-shadow: 0 4px 20px -2px rgba(139, 92, 246, 0.2);
+        }
+
+        /* Animação para remoção de tarefas */
+        .task-fade-out {
+            opacity: 0;
+            transform: translateX(30px);
+            max-height: 0;
+            padding-top: 0;
+            padding-bottom: 0;
+            margin-top: 0;
+            margin-bottom: 0;
+            overflow: hidden;
+            border: none;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: rgba(15, 23, 42, 0.5);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(139, 92, 246, 0.3);
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(139, 92, 246, 0.6);
+        }
+    </style>
+</head>
+<body class="text-slate-100 flex flex-col justify-between p-4 sm:p-6 md:p-8 font-sans antialiased select-none">
+
+    <!-- Container Principal -->
+    <main class="w-full max-w-2xl mx-auto my-auto py-6">
+        
+        <!-- Header da Aplicação -->
+        <header class="text-center mb-8">
+            <div class="inline-flex items-center justify-center p-3 bg-indigo-500/10 rounded-2xl border border-indigo-500/20 mb-3 shadow-lg shadow-indigo-500/10">
+                <i class="fa-solid fa-check-double text-3xl text-indigo-400"></i>
+            </div>
+            <h1 class="text-3xl sm:text-4xl font-extrabold tracking-tight bg-gradient-to-r from-indigo-300 via-purple-300 to-pink-300 bg-clip-text text-transparent">
+                Task Master Pro
+            </h1>
+            <p class="text-slate-400 text-sm sm:text-base mt-2">Organize seu dia com elegância e produtividade</p>
+        </header>
+
+        <!-- Card Principal (Glassmorphism) -->
+        <div class="glass-card rounded-3xl p-6 sm:p-8 shadow-2xl relative overflow-hidden">
+            <!-- Brilho decorativo no fundo -->
+            <div class="absolute -top-24 -right-24 w-48 h-48 bg-purple-500/10 rounded-full blur-3xl pointer-events-none"></div>
+            <div class="absolute -bottom-24 -left-24 w-48 h-48 bg-indigo-500/10 rounded-full blur-3xl pointer-events-none"></div>
+
+            <!-- Formulário de Adição de Tarefa -->
+            <form id="todoForm" class="flex flex-col sm:flex-row gap-3 mb-6 relative z-10">
+                <div class="relative flex-1">
+                    <i class="fa-solid fa-pen text-slate-400 absolute left-4 top-1/2 -translate-y-1/2 text-sm"></i>
+                    <input 
+                        type="text" 
+                        id="taskInput" 
+                        placeholder="O que você precisa fazer hoje?" 
+                        class="w-full glass-input text-slate-100 placeholder-slate-400 pl-11 pr-4 py-3.5 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500 transition-all text-sm sm:text-base shadow-inner"
+                        maxlength="80"
+                        autocomplete="off"
+                        required
+                    />
+                </div>
+                <button 
+                    type="submit" 
+                    class="bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white font-medium px-6 py-3.5 rounded-xl transition-all shadow-lg shadow-indigo-600/30 active:scale-95 flex items-center justify-center gap-2 text-sm sm:text-base cursor-pointer"
+                >
+                    <i class="fa-solid fa-plus"></i>
+                    <span>Adicionar</span>
+                </button>
+            </form>
+
+            <!-- Filtros de Visualização -->
+            <div class="flex flex-wrap items-center justify-between gap-3 mb-6 pb-4 border-b border-slate-700/50">
+                <div class="flex items-center gap-1 bg-slate-900/40 p-1 rounded-xl border border-slate-700/40 w-full sm:w-auto justify-center">
+                    <button 
+                        data-filter="all" 
+                        class="filter-btn active px-4 py-1.5 rounded-lg text-xs font-semibold transition-all bg-indigo-600 text-white shadow-sm"
+                    >
+                        Todas
+                    </button>
+                    <button 
+                        data-filter="pending" 
+                        class="filter-btn px-4 py-1.5 rounded-lg text-xs font-semibold text-slate-400 hover:text-slate-200 transition-all"
+                    >
+                        Pendentes
+                    </button>
+                    <button 
+                        data-filter="completed" 
+                        class="filter-btn px-4 py-1.5 rounded-lg text-xs font-semibold text-slate-400 hover:text-slate-200 transition-all"
+                    >
+                        Concluídas
+                    </button>
+                </div>
+
+                <!-- Botão de Limpar Concluídas -->
+                <button 
+                    id="clearCompletedBtn" 
+                    class="text-xs text-slate-400 hover:text-rose-400 transition-colors flex items-center gap-1.5 px-2 py-1 rounded-md hover:bg-rose-500/10 hidden sm:flex"
+                    title="Remover todas as tarefas concluídas"
+                >
+                    <i class="fa-regular fa-trash-can"></i>
+                    <span>Limpar concluídas</span>
+                </button>
+            </div>
+
+            <!-- Lista de Tarefas -->
+            <ul id="taskList" class="space-y-3 max-h-[380px] overflow-y-auto pr-1">
+                <!-- Itens injetados via JavaScript -->
+            </ul>
+
+            <!-- Estado Vazio (Empty State) -->
+            <div id="emptyState" class="hidden py-12 text-center">
+                <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-slate-800/80 text-slate-500 mb-3 border border-slate-700/50">
+                    <i class="fa-regular fa-clipboard text-2xl"></i>
+                </div>
+                <p class="text-slate-300 font-medium text-base">Nenhuma tarefa encontrada</p>
+                <p class="text-slate-500 text-xs mt-1" id="emptyStateSub">Adicione novas tarefas para começar sua rotina!</p>
+            </div>
+
+            <!-- Barra de Estatísticas / Footer do Card -->
+            <div class="mt-6 pt-4 border-t border-slate-700/50 flex items-center justify-between text-xs text-slate-400">
+                <div class="flex items-center gap-2">
+                    <span id="totalTasksCount" class="font-semibold text-indigo-300">0</span> tarefas no total
+                </div>
+                <div class="flex items-center gap-2">
+                    <div class="w-20 bg-slate-800 rounded-full h-2 overflow-hidden border border-slate-700">
+                        <div id="progressBar" class="bg-gradient-to-r from-indigo-500 to-purple-500 h-full transition-all duration-300 w-0"></div>
+                    </div>
+                    <span id="completionPercentage" class="font-semibold text-purple-300">0%</span>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Rodapé -->
+    <footer class="text-center text-xs text-slate-500 py-4">
+        Task Master Pro &copy; 2026 — Desenvolvido com HTML, CSS (Tailwind) & Vanilla JS
+    </footer>
+
+    <!-- Lógica em JavaScript -->
+    <script>
+        /**
+         * Task Master Pro - Aplicação Principal
+         * Utiliza localStorage, loops (forEach/for) e estruturas de decisão (if/else/switch).
+         */
+
+        // Elementos do DOM
+        const todoForm = document.getElementById('todoForm');
+        const taskInput = document.getElementById('taskInput');
+        const taskList = document.getElementById('taskList');
+        const emptyState = document.getElementById('emptyState');
+        const emptyStateSub = document.getElementById('emptyStateSub');
+        const totalTasksCount = document.getElementById('totalTasksCount');
+        const progressBar = document.getElementById('progressBar');
+        const completionPercentage = document.getElementById('completionPercentage');
+        const filterBtns = document.querySelectorAll('.filter-btn');
+        const clearCompletedBtn = document.getElementById('clearCompletedBtn');
+
+        // Estado da Aplicação
+        let tasks = [];
+        let currentFilter = 'all'; // 'all', 'pending', 'completed'
+
+        // Inicialização
+        document.addEventListener('DOMContentLoaded', () => {
+            loadTasksFromLocalStorage();
+            setupEventListeners();
+            render();
+        });
+
+        // Configuração de Event Listeners
+        function setupEventListeners() {
+            // Submissão do formulário
+            todoForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                const taskText = taskInput.value.trim();
+                
+                // Operador de decisão simples para validação
+                if (taskText !== '') {
+                    addTask(taskText);
+                    taskInput.value = '';
+                    taskInput.focus();
+                }
+            });
+
+            // Filtros de visualização (Loop com forEach)
+            filterBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    // Atualiza botão ativo
+                    filterBtns.forEach(b => {
+                        b.classList.remove('bg-indigo-600', 'text-white', 'shadow-sm');
+                        b.classList.add('text-slate-400');
+                    });
+                    btn.classList.add('bg-indigo-600', 'text-white', 'shadow-sm');
+                    btn.classList.remove('text-slate-400');
+
+                    currentFilter = btn.getAttribute('data-filter');
+                    render();
+                });
+            });
+
+            // Limpar tarefas concluídas
+            clearCompletedBtn.addEventListener('click', () => {
+                clearCompletedTasks();
+            });
+        }
+
+        // --- GERENCIAMENTO DE DADOS E PERSISTÊNCIA ---
+
+        function loadTasksFromLocalStorage() {
+            try {
+                const storedTasks = localStorage.getItem('task_master_items');
+                // Operador de decisão (if / else) para tratar ausência ou dados armazenados
+                if (storedTasks) {
+                    tasks = JSON.parse(storedTasks);
+                } else {
+                    // Tarefas padrão para primeira navegação
+                    tasks = [
+                        { id: Date.now() - 2, text: 'Aprender JavaScript Avançado', completed: true },
+                        { id: Date.now() - 1, text: 'Desenvolver um projeto com visual incrível', completed: false }
+                    ];
+                    saveTasksToLocalStorage();
+                }
+            } catch (error) {
+                console.error('Erro ao carregar dados do localStorage:', error);
+                tasks = [];
+            }
+        }
+
+        function saveTasksToLocalStorage() {
+            try {
+                localStorage.setItem('task_master_items', JSON.stringify(tasks));
+            } catch (error) {
+                console.error('Erro ao salvar no localStorage:', error);
+            }
+        }
+
+        // --- AÇÕES DAS TAREFAS ---
+
+        function addTask(text) {
+            const newTask = {
+                id: Date.now(),
+                text: text,
+                completed: false
+            };
+            tasks.unshift(newTask); // Adiciona no início da lista
+            saveTasksToLocalStorage();
+            render();
+        }
+
+        function toggleTaskStatus(id) {
+            // Loop for de iteração e operador de decisão if
+            for (let i = 0; i < tasks.length; i++) {
+                if (tasks[i].id === id) {
+                    tasks[i].completed = !tasks[i].completed;
+                    break;
+                }
+            }
+            saveTasksToLocalStorage();
+            render();
+        }
+
+        function deleteTask(id) {
+            const taskElement = document.querySelector(`[data-id="${id}"]`);
+            
+            // Adiciona animação de remoção suave
+            if (taskElement) {
+                taskElement.classList.add('task-fade-out');
+                
+                setTimeout(() => {
+                    // Filtra removendo o item correspondente
+                    tasks = tasks.filter(task => task.id !== id);
+                    saveTasksToLocalStorage();
+                    render();
+                }, 250);
+            } else {
+                tasks = tasks.filter(task => task.id !== id);
+                saveTasksToLocalStorage();
+                render();
+            }
+        }
+
+        function clearCompletedTasks() {
+            tasks = tasks.filter(task => !task.completed);
+            saveTasksToLocalStorage();
+            render();
+        }
+
+        // --- RENDERIZAÇÃO E INTERFACE ---
+
+        function getFilteredTasks() {
+            // Operador de decisão (switch) para os filtros
+            switch (currentFilter) {
+                case 'pending':
+                    return tasks.filter(task => !task.completed);
+                case 'completed':
+                    return tasks.filter(task => task.completed);
+                case 'all':
+                default:
+                    return tasks;
+            }
+        }
+
+        function render() {
+            const filteredTasks = getFilteredTasks();
+            taskList.innerHTML = '';
+
+            // Decisão sobre exibição do estado vazio (Empty State)
+            if (filteredTasks.length === 0) {
+                emptyState.classList.remove('hidden');
+                taskList.classList.add('hidden');
+
+                // Atualiza mensagem dependendo do filtro atual (if/else)
+                if (currentFilter === 'pending') {
+                    emptyStateSub.textContent = 'Parabéns! Não há nenhuma tarefa pendente no momento.';
+                } else if (currentFilter === 'completed') {
+                    emptyStateSub.textContent = 'Você ainda não concluiu nenhuma tarefa.';
+                } else {
+                    emptyStateSub.textContent = 'Sua lista está totalmente limpa! Adicione uma tarefa acima.';
+                }
+            } else {
+                emptyState.classList.add('hidden');
+                taskList.classList.remove('hidden');
+
+                // Loop (forEach) para construção dinamica das tarefas na DOM
+                filteredTasks.forEach(task => {
+                    const li = document.createElement('li');
+                    li.setAttribute('data-id', task.id);
+                    li.className = `task-item glass-card p-4 rounded-2xl flex items-center justify-between gap-3 border border-slate-700/40 group ${task.completed ? 'opacity-75 bg-slate-900/30' : ''}`;
+
+                    // HTML interno do item da tarefa
+                    li.innerHTML = `
+                        <div class="flex items-center gap-3.5 flex-1 min-w-0">
+                            <button 
+                                onclick="toggleTaskStatus(${task.id})" 
+                                class="w-6 h-6 rounded-lg flex items-center justify-center border transition-all ${
+                                    task.completed 
+                                        ? 'bg-gradient-to-r from-emerald-500 to-teal-500 border-emerald-400 text-white shadow-sm shadow-emerald-500/30' 
+                                        : 'border-slate-500/50 hover:border-indigo-400 text-transparent'
+                                }"
+                                aria-label="Marcar como concluída"
+                            >
+                                <i class="fa-solid fa-check text-xs"></i>
+                            </button>
+                            <span class="text-sm sm:text-base break-all transition-all ${
+                                task.completed 
+                                    ? 'line-through text-slate-500 font-normal' 
+                                    : 'text-slate-200 font-medium'
+                            }">
+                                ${escapeHTML(task.text)}
+                            </span>
+                        </div>
+                        <button 
+                            onclick="deleteTask(${task.id})" 
+                            class="text-slate-500 hover:text-rose-400 p-2 rounded-xl hover:bg-rose-500/10 transition-all opacity-80 sm:opacity-0 sm:group-hover:opacity-100 focus:opacity-100"
+                            title="Excluir tarefa"
+                            aria-label="Excluir tarefa"
+                        >
+                            <i class="fa-regular fa-trash-can text-sm"></i>
+                        </button>
+                    `;
+
+                    taskList.appendChild(li);
+                });
+            }
+
+            updateStatistics();
+        }
+
+        function updateStatistics() {
+            const total = tasks.length;
+            let completedCount = 0;
+
+            // Loop para contagem de tarefas concluídas
+            for (let i = 0; i < tasks.length; i++) {
+                if (tasks[i].completed) {
+                    completedCount++;
+                }
+            }
+
+            // Cálculo da porcentagem (Operador Ternário)
+            const percentage = total === 0 ? 0 : Math.round((completedCount / total) * 100);
+
+            // Atualização no DOM
+            totalTasksCount.textContent = total;
+            completionPercentage.textContent = `${percentage}%`;
+            progressBar.style.width = `${percentage}%`;
+        }
+
+    
+    </script>
+</body>
+</html>
+```
